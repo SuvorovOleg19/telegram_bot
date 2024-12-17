@@ -74,11 +74,17 @@ def handle_text(message):
     # Проверяем наличие изображений и отправляем первое фото с подписью
     if images:
         first_image = images[0]  # Берем первое изображение
-        caption = get_image_caption(first_image)  # Получаем подпись
-        if caption:
-            bot.send_photo(message.chat.id, first_image, caption=caption)  # Отправляем фото с подписью
-        else:
-            bot.send_photo(message.chat.id, first_image, caption="Изображение с Wikipedia")  # Без подписи
+        try:
+            caption = get_image_caption(first_image)  # Получаем подпись
+            if caption:
+                bot.send_photo(message.chat.id, first_image, caption=caption)  # Отправляем фото с подписью
+            else:
+                bot.send_photo(message.chat.id, first_image, caption="Изображение с Wikipedia")  # Без подписи
+        except Exception as e:
+            print("Ошибка при отправке изображения:", e)
+            bot.send_message(message.chat.id, "Не удалось загрузить изображение.")
+    else:
+        print("Изображений нет для данного запроса.")  # Лог для отладки
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
